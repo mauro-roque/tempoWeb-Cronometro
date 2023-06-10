@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Projeto TempoWeb</title>
+</head>
+<body>
+    <main>
+        <section id="item1">
+            <span id="minutos">00</span>
+            <span>:</span>
+            <span id="segundos">00</span>
+        </section>
+        <section id="item2">
+            <img id="playOn" src="./img/play.svg" alt="play">
+            <img id="playStop" class="sumir" src="./img/pause.svg" alt="pause">
+
+            <img id="definirTimer" src="./img/timer.svg" alt="timer">
+            <img id="playOff" class="sumir" src="./img/stop.svg" alt="stop">
+        </section>
+    </main>
+    <footer>
+        <img id="volumeOn" src="./img/volumeon.svg" alt="volume on">
+        <img id="volumeOff" src="./img/volumeoff.svg" class="sumir" alt="volume off">
+    </footer>
+    <script>
+      let idStop;
+      let minutos = document.querySelector('#minutos')
+      let segundos = document.querySelector('#segundos')
+      const musicaRelogio = new Audio('./audio/musica_relogio.mp3');
+      const despertadoRelogio = new Audio('./audio/despertador.mp3');
+      const definirTimer = document.getElementById('definirTimer')
+      const playOn = document.getElementById('playOn')
+      const playStop = document.getElementById('playStop')
+      const playOff = document.getElementById('playOff')
+      const volumeOn = document.getElementById('volumeOn')
+      const volumeOff = document.getElementById('volumeOff')
+      definirTimer.addEventListener('click',timeMinutosSegundos)
+      playOn.addEventListener('click',play)
+      playStop.addEventListener('click',pause)
+      playOff.addEventListener('click',stop)
+      volumeOn.addEventListener('click',musicaOn)
+      volumeOff.addEventListener('click',musicaOff)
+     
+      function timeMinutosSegundos(){
+        document.querySelector('#minutos').innerText = prompt('Digite o valor dos minutos:')
+        document.querySelector('#segundos').innerText = prompt('Digite o valor dos segundos:')
+        minutos = document.querySelector('#minutos').innerText
+        segundos = document.querySelector('#segundos').innerText
+        addZero()
+      }
+      function inverterClassButton01(){
+        playOn.classList.add('sumir')
+        definirTimer.classList.add('sumir')
+        playStop.classList.remove('sumir')
+        playOff.classList.remove('sumir')
+      }
+      function inverterClassButton02() {
+        playOn.classList.remove('sumir')
+        definirTimer.classList.remove('sumir')
+        playStop.classList.add('sumir')
+        playOff.classList.add('sumir')
+      }
+      function addZero(){
+        if(minutos<10){
+          document.querySelector('#minutos').innerText = String(minutos).padStart(2, '0')
+        }if(segundos<10){
+          document.querySelector('#segundos').innerText = String(segundos).padStart(2, '0')
+        }
+      }
+      function play(){
+        inverterClassButton01()
+        if(segundos>0){
+          --segundos
+          document.querySelector('#segundos').innerText = segundos
+          addZero()
+        }else if(minutos > 0 && segundos == 0){
+          --minutos
+          segundos = 59
+          document.querySelector('#minutos').innerText = minutos
+          document.querySelector('#segundos').innerText = segundos
+          addZero()
+        }else{
+          despertadoRelogio.play()
+          return
+        }
+        idStop = setTimeout(play,1000)
+      }
+      function pause(){
+        inverterClassButton02()
+        clearTimeout(idStop)
+      }
+      function stop(){
+        inverterClassButton02()
+        clearTimeout(idStop)
+        segundos = 0
+        minutos = 0
+        document.querySelector('#minutos').innerText = minutos
+        document.querySelector('#segundos').innerText = segundos
+        addZero()
+      }
+      /*parte da musica*/
+      function musicaOn(){
+        musicaRelogio.loop = true;
+        musicaRelogio.play();
+        volumeOn.classList.add('sumir');
+        volumeOff.classList.remove('sumir');
+      }
+      function musicaOff(){
+        musicaRelogio.pause();
+        volumeOff.classList.add('sumir');
+        volumeOn.classList.remove('sumir');
+      }
+    </script>
+</body>
+</html>
